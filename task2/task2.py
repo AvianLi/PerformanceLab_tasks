@@ -1,47 +1,49 @@
+import sys
+
 # Функция для получения данных о круге из файла
-def get_circle_data():
-    # Открываем файл circle.txt
-    with open('circle.txt', 'r') as f:
-        # Чтение первой строки - координаты центра окружности (x, y)
+def get_circle_data(file_name):
+    # Открываем файл и читаем данные
+    with open(file_name, 'r') as f:
         x, y = map(float, f.readline().split())
-        # Чтение второй строки - радиус окружности
         r = float(f.readline())
     return (x, y, r)
 
 # Функция для получения данных о точках из файла
-def get_points_data():
+def get_points_data(file_name):
     points = []
-    # Открываем файл points.txt
-    with open('points.txt', 'r') as f:
-        # Чтение каждой строки, каждая строка содержит координаты одной точки (x, y)
+    with open(file_name, 'r') as f:
         for line in f:
             points.append(tuple(map(float, line.split())))
     return points
 
 # Функция для определения положения точки относительно окружности
 def point_position(circle, point):
-    x_center, y_center, radius = circle  # Координаты центра окружности и радиус
-    x_point, y_point = point  # Координаты точки
-    # Вычисление квадрата расстояния от точки до центра окружности
+    x_center, y_center, radius = circle
+    x_point, y_point = point
     distance_squared = (x_point - x_center) ** 2 + (y_point - y_center) ** 2
-    # Квадрат радиуса окружности
     radius_squared = radius ** 2
 
-    # Сравнение квадрата расстояния с квадратом радиуса
     if distance_squared == radius_squared:
-        return 0  # Точка лежит на окружности
+        return 0  # Точка на окружности
     elif distance_squared < radius_squared:
         return 1  # Точка внутри окружности
     else:
-        return 2  # Точка снаружи окружности
+        return 2  # Точка вне окружности
 
 # Основная функция программы
 def main():
-    # Читаем данные окружности и точек
-    circle = get_circle_data()
-    points = get_points_data()
+    if len(sys.argv) != 3:
+        print("Usage: python script.py <circle.txt> <points.txt>")
+        sys.exit(1)
 
-    # Для каждой точки вычисляем её положение относительно окружности и выводим результат
+    circle_file = sys.argv[1]
+    points_file = sys.argv[2]
+
+    # Читаем данные окружности и точек
+    circle = get_circle_data(circle_file)
+    points = get_points_data(points_file)
+
+    # Для каждой точки вычисляем её положение относительно окружности
     for point in points:
         print(point_position(circle, point))
 
